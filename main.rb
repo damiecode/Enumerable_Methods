@@ -88,7 +88,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
   end
 
   def my_map(arg = nil)
-    return :my_map unless block_given?
+    return to_enum unless block_given?
 
     arr = []
     my_each do |i|
