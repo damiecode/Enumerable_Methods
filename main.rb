@@ -31,7 +31,7 @@ module Enumerable
   end
 
   def my_all?(param = nil)
-    my_each { |i| return false if yield(i) === false } if block_given?
+    my_each { |i| return false if yield(i) == false } if block_given?
     my_each { |_i| return false if item == false } if param.nil?
 
     true
@@ -85,7 +85,7 @@ module Enumerable
     arr
   end
 
-  def my_inject(*args)
+  def my_inject(*_args)
     result = self[0]
     self[1..-1].my_each { |i| result = yield(result, i) }
     result
