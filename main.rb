@@ -45,6 +45,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     true
   end
 
+  # rubocop:disable  Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   def my_any?(param = nil)
     if block_given?
       my_each { |i| return true if yield(i) }
@@ -125,6 +126,7 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     operand
   end
 end
+# rubocop:enable  Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
 def multiply_els(arr)
   arr.my_inject { |a, b| a * b }
