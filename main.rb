@@ -111,8 +111,8 @@ module Enumerable # rubocop:disable Metrics/ModuleLength
     elsif args[1].nil? && block_given?
       operand = args[0]
     else
-      symbol = args[0]
-      operand = args[1]
+      operand = args[0]
+      symbol = args[1]
     end
 
     arr[0..-1].my_each do |i|
