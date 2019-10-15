@@ -31,19 +31,31 @@ module Enumerable
   end
 
   def my_all?(param = nil)
-    my_each { |i| return false if yield(i) == false } if block_given?
-    my_each { |_i| return false if item == false } if param.nil?
-
+    if block_given?
+      my_each { |i| return false unless yield(i) }
+    elsif param.class == Class
+      my_each { |i| return false unless i.class == param }
+    elsif param.class == Regexp
+      my_each { |i| return false unless i =~ param }
+    elsif param.nil?
+      my_each { |i| return false unless i }
+    else
+      my_each { |i| return false unless i == param }
+    end
     true
   end
 
   def my_any?(param = nil)
     if block_given?
       my_each { |i| return true if yield(i) }
+    elsif param.class == Class
+      my_each { |i| return true if i.class == param }
+    elsif param.class == Regexp
+      my_each { |i| return true if i =~ param }
     elsif param.nil?
       my_each { |i| return true if i }
     else
-      my_each { |i| return true if i.class == param }
+      my_each { |i| return true if i == param }
     end
     false
   end
@@ -51,10 +63,14 @@ module Enumerable
   def my_none?(param = nil)
     if block_given?
       my_each { |i| return false if yield(i) }
+    elsif param.class == Class
+      my_each { |i| return false if i.class == param }
+    elsif param.class == Regexp
+      my_each { |i| return false if i =~ param }
     elsif param.nil?
       my_each { |i| return false if i }
     else
-      my_each { |i| return false if i.class == param }
+      my_each { |i| return false if i == param }
     end
     true
   end
@@ -72,7 +88,7 @@ module Enumerable
   end
 
   def my_map(arg = nil)
-    return to_enum unless block_given?
+    return :my_map unless block_given?
 
     arr = []
     my_each do |i|
@@ -85,10 +101,28 @@ module Enumerable
     arr
   end
 
-  def my_inject(*_args)
-    result = self[0]
-    self[1..-1].my_each { |i| result = yield(result, i) }
-    result
+  def my_inject(*args)
+    arr = to_a.dup
+    if args[0].nil?
+      operand = arr.shift
+    elsif args[1].nil? && !block_given?
+      symbol = args[0]
+      operand = arr.shift
+    elsif args[1].nil? && block_given?
+      operand = args[0]
+    else
+      symbol = args[0]
+      operand = args[1]
+    end
+
+    arr[0..-1].my_each do |i|
+      operand = if symbol
+                  operand.send(symbol, i)
+                else
+                  yield(operand, i)
+                end
+    end
+    operand
   end
 end
 
