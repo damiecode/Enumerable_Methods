@@ -88,7 +88,7 @@ RSpec.describe Enumerable do
       end
 
       it 'returns false if all the elements evaluates to true' do
-        expect(arr.my_none? { |num| num < 10}).to eq(false)
+        expect(arr.my_none? { |num| num < 10 }).to eq(false)
       end
     end
   end
